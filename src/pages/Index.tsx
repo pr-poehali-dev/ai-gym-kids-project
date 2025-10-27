@@ -51,6 +51,18 @@ interface Avatar {
   cost: number;
 }
 
+interface ShopItem {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  category: 'merch' | 'digital' | 'service' | 'toy';
+  icon: string;
+  image: string;
+  inStock: boolean;
+  popular?: boolean;
+}
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [walletBalance, setWalletBalance] = useState(1250);
@@ -59,6 +71,7 @@ const Index = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const userStats = {
     name: 'Маша',
@@ -79,6 +92,132 @@ const Index = () => {
     { id: 7, emoji: '🐱', name: 'Котёнок', unlocked: false, cost: 80 },
     { id: 8, emoji: '🐼', name: 'Панда', unlocked: false, cost: 120 },
     { id: 9, emoji: '🐯', name: 'Тигр', unlocked: false, cost: 200 },
+  ];
+
+  const shopItems: ShopItem[] = [
+    {
+      id: 1,
+      title: 'Футболка AI GymKids',
+      description: 'Крутая футболка с логотипом',
+      price: 450,
+      category: 'merch',
+      icon: 'Shirt',
+      image: '👕',
+      inStock: true,
+      popular: true,
+    },
+    {
+      id: 2,
+      title: 'Кепка спортивная',
+      description: 'Стильная кепка для тренировок',
+      price: 320,
+      category: 'merch',
+      icon: 'CircleUser',
+      image: '🧢',
+      inStock: true,
+    },
+    {
+      id: 3,
+      title: 'Скакалка с счётчиком',
+      description: 'Умная скакалка с подсчётом прыжков',
+      price: 580,
+      category: 'toy',
+      icon: 'Activity',
+      image: '🪂',
+      inStock: true,
+    },
+    {
+      id: 4,
+      title: 'Мяч фитнес-бол',
+      description: 'Надувной мяч для упражнений',
+      price: 890,
+      category: 'toy',
+      icon: 'Circle',
+      image: '⚽',
+      inStock: true,
+    },
+    {
+      id: 5,
+      title: 'Премиум аватары',
+      description: 'Открой все премиум аватары',
+      price: 250,
+      category: 'digital',
+      icon: 'Sparkles',
+      image: '✨',
+      inStock: true,
+      popular: true,
+    },
+    {
+      id: 6,
+      title: 'Новые тренировки',
+      description: 'Доступ к 5 эксклюзивным тренировкам',
+      price: 180,
+      category: 'digital',
+      icon: 'Dumbbell',
+      image: '💪',
+      inStock: true,
+    },
+    {
+      id: 7,
+      title: 'Кинотеатр на 2 человек',
+      description: 'Билеты в кино на выходные',
+      price: 1200,
+      category: 'service',
+      icon: 'Film',
+      image: '🎬',
+      inStock: true,
+      popular: true,
+    },
+    {
+      id: 8,
+      title: 'Поход в игровую зону',
+      description: '2 часа весёлья с друзьями',
+      price: 980,
+      category: 'service',
+      icon: 'Gamepad2',
+      image: '🎮',
+      inStock: true,
+    },
+    {
+      id: 9,
+      title: 'Набор наклеек',
+      description: '50 ярких наклеек с героями',
+      price: 150,
+      category: 'merch',
+      icon: 'Sticker',
+      image: '🎉',
+      inStock: true,
+    },
+    {
+      id: 10,
+      title: 'Бутылка для воды',
+      description: 'Спортивная бутылка AI GymKids',
+      price: 380,
+      category: 'merch',
+      icon: 'Cup',
+      image: '🧃',
+      inStock: true,
+    },
+    {
+      id: 11,
+      title: 'Рюкзак спортивный',
+      description: 'Удобный рюкзак для тренировок',
+      price: 1450,
+      category: 'merch',
+      icon: 'Backpack',
+      image: '🎒',
+      inStock: true,
+    },
+    {
+      id: 12,
+      title: 'Мастер-класс тренера',
+      description: 'Индивидуальная тренировка с про',
+      price: 2500,
+      category: 'service',
+      icon: 'User',
+      image: '🏋️',
+      inStock: false,
+    },
   ];
 
   const leaderboard: LeaderboardUser[] = [
@@ -247,37 +386,41 @@ const Index = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-6">
-            <TabsTrigger value="dashboard" className="text-xs lg:text-base">
-              <Icon name="LayoutDashboard" className="mr-1" size={16} />
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-9 mb-6 gap-1">
+            <TabsTrigger value="dashboard" className="text-xs lg:text-sm px-2">
+              <Icon name="LayoutDashboard" className="lg:mr-1" size={16} />
               <span className="hidden lg:inline">Главная</span>
             </TabsTrigger>
-            <TabsTrigger value="workouts" className="text-xs lg:text-base">
-              <Icon name="Dumbbell" className="mr-1" size={16} />
+            <TabsTrigger value="workouts" className="text-xs lg:text-sm px-2">
+              <Icon name="Dumbbell" className="lg:mr-1" size={16} />
               <span className="hidden lg:inline">Тренировки</span>
             </TabsTrigger>
-            <TabsTrigger value="camera" className="text-xs lg:text-base">
-              <Icon name="Camera" className="mr-1" size={16} />
+            <TabsTrigger value="camera" className="text-xs lg:text-sm px-2">
+              <Icon name="Camera" className="lg:mr-1" size={16} />
               <span className="hidden lg:inline">ИИ-тренер</span>
             </TabsTrigger>
-            <TabsTrigger value="lessons" className="text-xs lg:text-base">
-              <Icon name="GraduationCap" className="mr-1" size={16} />
+            <TabsTrigger value="lessons" className="text-xs lg:text-sm px-2">
+              <Icon name="GraduationCap" className="lg:mr-1" size={16} />
               <span className="hidden lg:inline">Уроки</span>
             </TabsTrigger>
-            <TabsTrigger value="wallet" className="text-xs lg:text-base">
-              <Icon name="Wallet" className="mr-1" size={16} />
+            <TabsTrigger value="shop" className="text-xs lg:text-sm px-2">
+              <Icon name="ShoppingBag" className="lg:mr-1" size={16} />
+              <span className="hidden lg:inline">Магазин</span>
+            </TabsTrigger>
+            <TabsTrigger value="wallet" className="text-xs lg:text-sm px-2">
+              <Icon name="Wallet" className="lg:mr-1" size={16} />
               <span className="hidden lg:inline">Кошелёк</span>
             </TabsTrigger>
-            <TabsTrigger value="leaderboard" className="text-xs lg:text-base">
-              <Icon name="Trophy" className="mr-1" size={16} />
+            <TabsTrigger value="leaderboard" className="text-xs lg:text-sm px-2">
+              <Icon name="Trophy" className="lg:mr-1" size={16} />
               <span className="hidden lg:inline">Лидеры</span>
             </TabsTrigger>
-            <TabsTrigger value="profile" className="text-xs lg:text-base">
-              <Icon name="User" className="mr-1" size={16} />
+            <TabsTrigger value="profile" className="text-xs lg:text-sm px-2">
+              <Icon name="User" className="lg:mr-1" size={16} />
               <span className="hidden lg:inline">Профиль</span>
             </TabsTrigger>
-            <TabsTrigger value="parental" className="text-xs lg:text-base">
-              <Icon name="Shield" className="mr-1" size={16} />
+            <TabsTrigger value="parental" className="text-xs lg:text-sm px-2">
+              <Icon name="Shield" className="lg:mr-1" size={16} />
               <span className="hidden lg:inline">Родители</span>
             </TabsTrigger>
           </TabsList>
@@ -744,6 +887,216 @@ const Index = () => {
                       <p className="font-semibold">Мастер финансов</p>
                       <Badge className="mt-2" variant="outline">Закрыто</Badge>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="shop" className="animate-fade-in">
+            <div className="space-y-6">
+              <Card className="border-2 bg-gradient-to-br from-pink-100 to-purple-100">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="text-center md:text-left">
+                      <h2 className="text-3xl font-bold mb-2">🎁 Магазин наград</h2>
+                      <p className="text-muted-foreground text-lg">
+                        Обменивай монеты на крутые призы!
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4 p-6 bg-white rounded-2xl border-2 border-purple-300 shadow-lg">
+                      <Icon name="Coins" size={40} className="text-orange-500" />
+                      <div>
+                        <p className="text-sm text-muted-foreground">Твои монеты</p>
+                        <div className="text-4xl font-bold text-orange-500">{userStats.points}</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant={selectedCategory === 'all' ? 'default' : 'outline'}
+                  onClick={() => setSelectedCategory('all')}
+                  className={selectedCategory === 'all' ? 'bg-purple-600' : ''}
+                >
+                  <Icon name="Sparkles" className="mr-2" size={16} />
+                  Все товары
+                </Button>
+                <Button
+                  variant={selectedCategory === 'merch' ? 'default' : 'outline'}
+                  onClick={() => setSelectedCategory('merch')}
+                  className={selectedCategory === 'merch' ? 'bg-purple-600' : ''}
+                >
+                  <Icon name="Shirt" className="mr-2" size={16} />
+                  Мерч
+                </Button>
+                <Button
+                  variant={selectedCategory === 'toy' ? 'default' : 'outline'}
+                  onClick={() => setSelectedCategory('toy')}
+                  className={selectedCategory === 'toy' ? 'bg-purple-600' : ''}
+                >
+                  <Icon name="Gamepad2" className="mr-2" size={16} />
+                  Игрушки
+                </Button>
+                <Button
+                  variant={selectedCategory === 'digital' ? 'default' : 'outline'}
+                  onClick={() => setSelectedCategory('digital')}
+                  className={selectedCategory === 'digital' ? 'bg-purple-600' : ''}
+                >
+                  <Icon name="Sparkles" className="mr-2" size={16} />
+                  Цифровые
+                </Button>
+                <Button
+                  variant={selectedCategory === 'service' ? 'default' : 'outline'}
+                  onClick={() => setSelectedCategory('service')}
+                  className={selectedCategory === 'service' ? 'bg-purple-600' : ''}
+                >
+                  <Icon name="Gift" className="mr-2" size={16} />
+                  Услуги
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {shopItems
+                  .filter((item) => selectedCategory === 'all' || item.category === selectedCategory)
+                  .map((item) => {
+                    const canAfford = userStats.points >= item.price;
+                    return (
+                      <Card
+                        key={item.id}
+                        className={`hover-scale border-2 transition-all relative ${
+                          item.popular
+                            ? 'border-yellow-400 bg-gradient-to-br from-yellow-50 to-orange-50'
+                            : !item.inStock
+                            ? 'border-gray-300 opacity-60'
+                            : 'border-gray-200'
+                        }`}
+                      >
+                        {item.popular && (
+                          <div className="absolute -top-3 -right-3 z-10">
+                            <Badge className="bg-yellow-500 text-white shadow-lg animate-bounce-subtle">
+                              <Icon name="Star" size={14} className="mr-1" />
+                              Популярно
+                            </Badge>
+                          </div>
+                        )}
+                        {!item.inStock && (
+                          <div className="absolute top-4 left-4 z-10">
+                            <Badge variant="outline" className="bg-gray-100">
+                              Нет в наличии
+                            </Badge>
+                          </div>
+                        )}
+                        <CardHeader>
+                          <div className="w-full aspect-square rounded-2xl bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center mb-4 text-6xl">
+                            {item.image}
+                          </div>
+                          <CardTitle className="text-lg">{item.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <p className="text-sm text-muted-foreground min-h-[40px]">{item.description}</p>
+                          <div className="flex items-center justify-between pt-4 border-t">
+                            <div className="flex items-center gap-2">
+                              <Icon name="Coins" size={24} className="text-orange-500" />
+                              <span className="text-2xl font-bold text-orange-500">{item.price}</span>
+                            </div>
+                            <Button
+                              disabled={!canAfford || !item.inStock}
+                              className={
+                                canAfford && item.inStock
+                                  ? 'bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600'
+                                  : ''
+                              }
+                            >
+                              {!item.inStock ? (
+                                <>
+                                  <Icon name="X" className="mr-2" size={18} />
+                                  Закончился
+                                </>
+                              ) : canAfford ? (
+                                <>
+                                  <Icon name="ShoppingCart" className="mr-2" size={18} />
+                                  Купить
+                                </>
+                              ) : (
+                                <>
+                                  <Icon name="Lock" className="mr-2" size={18} />
+                                  Мало монет
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+              </div>
+
+              <Card className="border-2 bg-gradient-to-br from-green-100 to-emerald-100">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon name="TrendingUp" size={20} className="text-green-600" />
+                    Как заработать больше монет?
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                      <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                        <Icon name="Dumbbell" size={24} className="text-purple-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Выполняй тренировки</p>
+                        <p className="text-sm text-muted-foreground">За каждую тренировку получай 40-100 монет</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                      <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                        <Icon name="GraduationCap" size={24} className="text-orange-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Проходи уроки</p>
+                        <p className="text-sm text-muted-foreground">Уроки финансов дают 30-70 монет</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                        <Icon name="Flame" size={24} className="text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Поддерживай серию</p>
+                        <p className="text-sm text-muted-foreground">Бонус 150 монет за 7 дней подряд</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                      <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                        <Icon name="Trophy" size={24} className="text-yellow-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Побеждай в рейтинге</p>
+                        <p className="text-sm text-muted-foreground">Топ-10 получают 100-500 монет в неделю</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 bg-gradient-to-br from-blue-100 to-purple-100">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon name="Package" size={20} className="text-purple-600" />
+                    Мои покупки
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <Icon name="ShoppingBag" size={64} className="mx-auto text-muted-foreground mb-4" />
+                    <p className="text-lg font-semibold mb-2">У тебя пока нет покупок</p>
+                    <p className="text-muted-foreground">
+                      Заработай монеты и купи что-нибудь крутое!
+                    </p>
                   </div>
                 </CardContent>
               </Card>

@@ -23,11 +23,24 @@ interface Achievement {
   unlocked: boolean;
 }
 
+interface FinanceLesson {
+  id: number;
+  title: string;
+  description: string;
+  duration: string;
+  difficulty: string;
+  icon: string;
+  completed: boolean;
+  coins: number;
+}
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [walletBalance, setWalletBalance] = useState(1250);
   const [parentalPin, setParentalPin] = useState('');
   const [isParentMode, setIsParentMode] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
 
   const userStats = {
     name: 'Маша',
@@ -95,6 +108,69 @@ const Index = () => {
     },
   ];
 
+  const financeLessons: FinanceLesson[] = [
+    {
+      id: 1,
+      title: 'Что такое деньги?',
+      description: 'Узнай, откуда берутся деньги и зачем они нужны',
+      duration: '5 мин',
+      difficulty: 'Легко',
+      icon: 'Coins',
+      completed: true,
+      coins: 30,
+    },
+    {
+      id: 2,
+      title: 'Копить или тратить?',
+      description: 'Научись планировать свои покупки',
+      duration: '7 мин',
+      difficulty: 'Легко',
+      icon: 'PiggyBank',
+      completed: true,
+      coins: 40,
+    },
+    {
+      id: 3,
+      title: 'Как работает банк?',
+      description: 'Узнай, что делают банки с деньгами',
+      duration: '8 мин',
+      difficulty: 'Средне',
+      icon: 'Building2',
+      completed: false,
+      coins: 50,
+    },
+    {
+      id: 4,
+      title: 'Карманные деньги',
+      description: 'Как правильно управлять своими деньгами',
+      duration: '6 мин',
+      difficulty: 'Легко',
+      icon: 'Wallet',
+      completed: false,
+      coins: 35,
+    },
+    {
+      id: 5,
+      title: 'Заработок и работа',
+      description: 'Откуда родители берут деньги',
+      duration: '10 мин',
+      difficulty: 'Средне',
+      icon: 'Briefcase',
+      completed: false,
+      coins: 60,
+    },
+    {
+      id: 6,
+      title: 'Цифровые деньги',
+      description: 'Что такое электронные платежи',
+      duration: '9 мин',
+      difficulty: 'Сложно',
+      icon: 'Smartphone',
+      completed: false,
+      coins: 70,
+    },
+  ];
+
   const achievements: Achievement[] = [
     { id: 1, title: 'Первая тренировка', icon: 'Star', unlocked: true },
     { id: 2, title: 'Неделя подряд', icon: 'Flame', unlocked: true },
@@ -130,21 +206,29 @@ const Index = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
-            <TabsTrigger value="dashboard" className="text-base">
-              <Icon name="LayoutDashboard" className="mr-2" size={18} />
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6">
+            <TabsTrigger value="dashboard" className="text-sm lg:text-base">
+              <Icon name="LayoutDashboard" className="mr-1 lg:mr-2" size={18} />
               Главная
             </TabsTrigger>
-            <TabsTrigger value="workouts" className="text-base">
-              <Icon name="Dumbbell" className="mr-2" size={18} />
+            <TabsTrigger value="workouts" className="text-sm lg:text-base">
+              <Icon name="Dumbbell" className="mr-1 lg:mr-2" size={18} />
               Тренировки
             </TabsTrigger>
-            <TabsTrigger value="wallet" className="text-base">
-              <Icon name="Wallet" className="mr-2" size={18} />
+            <TabsTrigger value="camera" className="text-sm lg:text-base">
+              <Icon name="Camera" className="mr-1 lg:mr-2" size={18} />
+              ИИ-тренер
+            </TabsTrigger>
+            <TabsTrigger value="lessons" className="text-sm lg:text-base">
+              <Icon name="GraduationCap" className="mr-1 lg:mr-2" size={18} />
+              Уроки
+            </TabsTrigger>
+            <TabsTrigger value="wallet" className="text-sm lg:text-base">
+              <Icon name="Wallet" className="mr-1 lg:mr-2" size={18} />
               Кошелёк
             </TabsTrigger>
-            <TabsTrigger value="parental" className="text-base">
-              <Icon name="Shield" className="mr-2" size={18} />
+            <TabsTrigger value="parental" className="text-sm lg:text-base">
+              <Icon name="Shield" className="mr-1 lg:mr-2" size={18} />
               Родители
             </TabsTrigger>
           </TabsList>
@@ -330,6 +414,290 @@ const Index = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="camera" className="animate-fade-in">
+            <div className="max-w-4xl mx-auto space-y-6">
+              {!isCameraActive ? (
+                <Card className="border-2 bg-gradient-to-br from-purple-100 to-blue-100">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-2xl">
+                      <Icon name="Camera" size={28} className="text-purple-600" />
+                      ИИ-тренер с камерой
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="text-center py-8">
+                      <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-purple-400 to-blue-400 rounded-3xl flex items-center justify-center animate-bounce-subtle">
+                        <Icon name="Video" size={64} className="text-white" />
+                      </div>
+                      <h3 className="text-2xl font-bold mb-3">Тренируйся с искусственным интеллектом!</h3>
+                      <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                        ИИ следит за правильностью выполнения упражнений через камеру и помогает улучшить технику
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-4 bg-white rounded-lg border-2 border-purple-200">
+                        <Icon name="Eye" size={32} className="text-purple-600 mb-2" />
+                        <h4 className="font-semibold mb-1">Анализ движений</h4>
+                        <p className="text-sm text-muted-foreground">ИИ видит твои упражнения в реальном времени</p>
+                      </div>
+                      <div className="p-4 bg-white rounded-lg border-2 border-blue-200">
+                        <Icon name="Target" size={32} className="text-blue-600 mb-2" />
+                        <h4 className="font-semibold mb-1">Проверка техники</h4>
+                        <p className="text-sm text-muted-foreground">Получай подсказки для улучшения</p>
+                      </div>
+                      <div className="p-4 bg-white rounded-lg border-2 border-orange-200">
+                        <Icon name="Award" size={32} className="text-orange-600 mb-2" />
+                        <h4 className="font-semibold mb-1">Больше баллов</h4>
+                        <p className="text-sm text-muted-foreground">Правильная техника = больше наград</p>
+                      </div>
+                    </div>
+                    <Button 
+                      className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-lg py-6"
+                      onClick={() => setIsCameraActive(true)}
+                    >
+                      <Icon name="Camera" className="mr-2" size={24} />
+                      Включить камеру
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-6">
+                  <Card className="border-2">
+                    <CardContent className="p-6">
+                      <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl relative overflow-hidden">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-center text-white space-y-4">
+                            <Icon name="Video" size={64} className="mx-auto animate-pulse" />
+                            <p className="text-xl font-semibold">Камера активирована</p>
+                            <p className="text-muted-foreground">Встань перед камерой и начни упражнение</p>
+                          </div>
+                        </div>
+                        <div className="absolute top-4 left-4 flex gap-2">
+                          <Badge className="bg-red-500 animate-pulse">
+                            <div className="w-2 h-2 bg-white rounded-full mr-2"></div>
+                            REC
+                          </Badge>
+                          <Badge className="bg-black/50 text-white">00:45</Badge>
+                        </div>
+                        <div className="absolute inset-0 border-4 border-green-400 rounded-xl opacity-50 animate-pulse"></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card className="border-2 border-green-200 bg-green-50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Icon name="CheckCircle2" size={18} className="text-green-600" />
+                          Правильная поза
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-green-600">92%</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2 border-orange-200 bg-orange-50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Icon name="Activity" size={18} className="text-orange-600" />
+                          Повторений
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-orange-600">8/10</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2 border-purple-200 bg-purple-50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Icon name="Coins" size={18} className="text-purple-600" />
+                          Заработано
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-purple-600">+46</div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <Card className="border-2 bg-blue-50">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icon name="MessageSquare" size={20} className="text-blue-600" />
+                        Подсказки ИИ-тренера
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                          <Icon name="ThumbsUp" size={20} className="text-green-600 mt-1" />
+                          <div>
+                            <p className="font-medium text-green-600">Отлично!</p>
+                            <p className="text-sm text-muted-foreground">Спина прямая, так держать!</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                          <Icon name="Info" size={20} className="text-orange-600 mt-1" />
+                          <div>
+                            <p className="font-medium text-orange-600">Совет</p>
+                            <p className="text-sm text-muted-foreground">Попробуй опускаться чуть ниже</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <div className="flex gap-4">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => setIsCameraActive(false)}
+                    >
+                      <Icon name="X" className="mr-2" size={18} />
+                      Остановить
+                    </Button>
+                    <Button className="flex-1 bg-green-600 hover:bg-green-700">
+                      <Icon name="Check" className="mr-2" size={18} />
+                      Завершить тренировку
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="lessons" className="animate-fade-in">
+            <div className="space-y-6">
+              <Card className="border-2 bg-gradient-to-br from-yellow-100 to-orange-100">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-2xl">
+                    <Icon name="GraduationCap" size={28} className="text-orange-600" />
+                    Финансовая грамотность
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-lg font-semibold mb-1">Твой прогресс обучения</p>
+                      <p className="text-sm text-muted-foreground">
+                        Пройдено {financeLessons.filter(l => l.completed).length} из {financeLessons.length} уроков
+                      </p>
+                    </div>
+                    <div className="text-4xl font-bold text-orange-600">
+                      {Math.round((financeLessons.filter(l => l.completed).length / financeLessons.length) * 100)}%
+                    </div>
+                  </div>
+                  <Progress 
+                    value={(financeLessons.filter(l => l.completed).length / financeLessons.length) * 100} 
+                    className="h-3 mt-4" 
+                  />
+                </CardContent>
+              </Card>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {financeLessons.map((lesson) => (
+                  <Card
+                    key={lesson.id}
+                    className={`hover-scale border-2 transition-all cursor-pointer ${
+                      lesson.completed 
+                        ? 'border-green-300 bg-green-50' 
+                        : selectedLesson === lesson.id
+                        ? 'border-purple-400 bg-purple-50'
+                        : 'border-gray-200'
+                    }`}
+                    onClick={() => setSelectedLesson(selectedLesson === lesson.id ? null : lesson.id)}
+                  >
+                    <CardHeader>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
+                          lesson.completed 
+                            ? 'bg-gradient-to-br from-green-400 to-emerald-400'
+                            : 'bg-gradient-to-br from-yellow-400 to-orange-400'
+                        }`}>
+                          <Icon name={lesson.icon} size={28} className="text-white" />
+                        </div>
+                        {lesson.completed && (
+                          <Badge className="bg-green-500">
+                            <Icon name="Check" size={14} className="mr-1" />
+                            Пройдено
+                          </Badge>
+                        )}
+                      </div>
+                      <CardTitle className="text-lg">{lesson.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-muted-foreground">{lesson.description}</p>
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Icon name="Clock" size={16} />
+                          <span>{lesson.duration}</span>
+                        </div>
+                        <Badge 
+                          variant="outline" 
+                          className={`${getDifficultyColor(lesson.difficulty)} text-white`}
+                        >
+                          {lesson.difficulty}
+                        </Badge>
+                      </div>
+                      {selectedLesson === lesson.id && !lesson.completed && (
+                        <div className="pt-4 border-t space-y-3 animate-fade-in">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1 font-semibold text-orange-500">
+                              <Icon name="Coins" size={18} />
+                              <span>+{lesson.coins} монет</span>
+                            </div>
+                            <Button 
+                              size="sm"
+                              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                            >
+                              <Icon name="Play" className="mr-2" size={16} />
+                              Начать урок
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <Card className="border-2 bg-gradient-to-br from-purple-100 to-pink-100">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon name="Trophy" size={20} className="text-purple-600" />
+                    Награды за обучение
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center p-4 bg-white rounded-lg">
+                      <Icon name="Star" size={32} className="mx-auto text-yellow-500 mb-2" />
+                      <p className="font-semibold">Первый урок</p>
+                      <Badge className="mt-2 bg-green-500">Получено</Badge>
+                    </div>
+                    <div className="text-center p-4 bg-white rounded-lg">
+                      <Icon name="Flame" size={32} className="mx-auto text-orange-500 mb-2" />
+                      <p className="font-semibold">3 урока подряд</p>
+                      <Badge className="mt-2 bg-green-500">Получено</Badge>
+                    </div>
+                    <div className="text-center p-4 bg-white rounded-lg opacity-50">
+                      <Icon name="Crown" size={32} className="mx-auto text-gray-400 mb-2" />
+                      <p className="font-semibold">Все уроки</p>
+                      <Badge className="mt-2" variant="outline">Закрыто</Badge>
+                    </div>
+                    <div className="text-center p-4 bg-white rounded-lg opacity-50">
+                      <Icon name="Sparkles" size={32} className="mx-auto text-gray-400 mb-2" />
+                      <p className="font-semibold">Мастер финансов</p>
+                      <Badge className="mt-2" variant="outline">Закрыто</Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 

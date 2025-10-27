@@ -63,6 +63,24 @@ interface ShopItem {
   popular?: boolean;
 }
 
+interface DailyQuest {
+  id: number;
+  title: string;
+  description: string;
+  progress: number;
+  target: number;
+  reward: number;
+  icon: string;
+  completed: boolean;
+}
+
+interface WeeklyStats {
+  day: string;
+  workouts: number;
+  lessons: number;
+  coins: number;
+}
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [walletBalance, setWalletBalance] = useState(1250);
@@ -351,6 +369,59 @@ const Index = () => {
     },
   ];
 
+  const dailyQuests: DailyQuest[] = [
+    {
+      id: 1,
+      title: 'Утренняя зарядка',
+      description: 'Выполни 1 тренировку сегодня',
+      progress: 1,
+      target: 1,
+      reward: 50,
+      icon: 'Sun',
+      completed: true,
+    },
+    {
+      id: 2,
+      title: 'Финансовый гений',
+      description: 'Пройди 1 урок финансовой грамотности',
+      progress: 0,
+      target: 1,
+      reward: 40,
+      icon: 'GraduationCap',
+      completed: false,
+    },
+    {
+      id: 3,
+      title: 'Супер-старание',
+      description: 'Заработай 100 монет за день',
+      progress: 50,
+      target: 100,
+      reward: 80,
+      icon: 'Coins',
+      completed: false,
+    },
+    {
+      id: 4,
+      title: 'ИИ-тренер',
+      description: 'Используй камеру для тренировки',
+      progress: 0,
+      target: 1,
+      reward: 60,
+      icon: 'Camera',
+      completed: false,
+    },
+  ];
+
+  const weeklyStats: WeeklyStats[] = [
+    { day: 'Пн', workouts: 2, lessons: 1, coins: 110 },
+    { day: 'Вт', workouts: 1, lessons: 2, coins: 130 },
+    { day: 'Ср', workouts: 3, lessons: 1, coins: 180 },
+    { day: 'Чт', workouts: 2, lessons: 2, coins: 170 },
+    { day: 'Пт', workouts: 2, lessons: 1, coins: 140 },
+    { day: 'Сб', workouts: 1, lessons: 0, coins: 50 },
+    { day: 'Вс', workouts: 1, lessons: 1, coins: 90 },
+  ];
+
   const achievements: Achievement[] = [
     { id: 1, title: 'Первая тренировка', icon: 'Star', unlocked: true },
     { id: 2, title: 'Неделя подряд', icon: 'Flame', unlocked: true },
@@ -492,6 +563,130 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground">
                   Осталось {userStats.nextLevelPoints - userStats.points} баллов до следующего уровня! 🎯
                 </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 bg-gradient-to-br from-yellow-100 to-orange-100">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Icon name="Target" size={20} className="text-orange-600" />
+                  Ежедневные задания
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {dailyQuests.map((quest) => (
+                    <div
+                      key={quest.id}
+                      className={`p-4 rounded-xl border-2 transition-all ${
+                        quest.completed
+                          ? 'bg-green-50 border-green-300'
+                          : 'bg-white border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          quest.completed ? 'bg-green-100' : 'bg-purple-100'
+                        }`}>
+                          <Icon 
+                            name={quest.completed ? 'CheckCircle2' : quest.icon} 
+                            size={24} 
+                            className={quest.completed ? 'text-green-600' : 'text-purple-600'}
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="font-semibold">{quest.title}</p>
+                            <div className="flex items-center gap-1 text-orange-500 font-bold">
+                              <Icon name="Coins" size={16} />
+                              <span>+{quest.reward}</span>
+                            </div>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{quest.description}</p>
+                          <div className="flex items-center gap-2">
+                            <Progress value={(quest.progress / quest.target) * 100} className="h-2 flex-1" />
+                            <span className="text-xs text-muted-foreground whitespace-nowrap">
+                              {quest.progress}/{quest.target}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 p-3 bg-purple-50 rounded-lg border-2 border-purple-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Icon name="Trophy" size={20} className="text-purple-600" />
+                      <span className="font-semibold">Всего выполнено</span>
+                    </div>
+                    <span className="text-lg font-bold text-purple-600">
+                      {dailyQuests.filter(q => q.completed).length}/{dailyQuests.length}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Icon name="BarChart3" size={20} className="text-blue-600" />
+                  Статистика за неделю
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-7 gap-2">
+                    {weeklyStats.map((stat, idx) => {
+                      const maxWorkouts = Math.max(...weeklyStats.map(s => s.workouts));
+                      const maxLessons = Math.max(...weeklyStats.map(s => s.lessons));
+                      const maxCoins = Math.max(...weeklyStats.map(s => s.coins));
+                      const workoutHeight = (stat.workouts / maxWorkouts) * 100;
+                      
+                      return (
+                        <div key={idx} className="flex flex-col items-center gap-2">
+                          <div className="text-xs font-medium text-muted-foreground">{stat.day}</div>
+                          <div className="w-full h-32 bg-muted/30 rounded-lg relative overflow-hidden flex flex-col justify-end">
+                            <div 
+                              className="w-full bg-gradient-to-t from-purple-500 to-purple-300 transition-all duration-500 animate-scale-in"
+                              style={{ height: `${workoutHeight}%` }}
+                            ></div>
+                          </div>
+                          <div className="text-xs font-bold text-purple-600">{stat.workouts}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                    <Icon name="Dumbbell" size={16} className="text-purple-600" />
+                    <span>Тренировки за неделю</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
+                    <div className="text-center p-4 bg-purple-50 rounded-lg">
+                      <Icon name="Dumbbell" size={24} className="mx-auto text-purple-600 mb-2" />
+                      <div className="text-2xl font-bold text-purple-600">
+                        {weeklyStats.reduce((sum, s) => sum + s.workouts, 0)}
+                      </div>
+                      <p className="text-sm text-muted-foreground">Тренировок</p>
+                    </div>
+                    <div className="text-center p-4 bg-orange-50 rounded-lg">
+                      <Icon name="GraduationCap" size={24} className="mx-auto text-orange-600 mb-2" />
+                      <div className="text-2xl font-bold text-orange-600">
+                        {weeklyStats.reduce((sum, s) => sum + s.lessons, 0)}
+                      </div>
+                      <p className="text-sm text-muted-foreground">Уроков</p>
+                    </div>
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <Icon name="Coins" size={24} className="mx-auto text-green-600 mb-2" />
+                      <div className="text-2xl font-bold text-green-600">
+                        {weeklyStats.reduce((sum, s) => sum + s.coins, 0)}
+                      </div>
+                      <p className="text-sm text-muted-foreground">Монет заработано</p>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 

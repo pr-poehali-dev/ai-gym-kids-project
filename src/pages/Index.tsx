@@ -34,6 +34,23 @@ interface FinanceLesson {
   coins: number;
 }
 
+interface LeaderboardUser {
+  id: number;
+  name: string;
+  avatar: string;
+  level: number;
+  points: number;
+  rank: number;
+}
+
+interface Avatar {
+  id: number;
+  emoji: string;
+  name: string;
+  unlocked: boolean;
+  cost: number;
+}
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [walletBalance, setWalletBalance] = useState(1250);
@@ -41,6 +58,7 @@ const Index = () => {
   const [isParentMode, setIsParentMode] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
+  const [selectedAvatar, setSelectedAvatar] = useState(1);
 
   const userStats = {
     name: 'Маша',
@@ -50,6 +68,29 @@ const Index = () => {
     streak: 7,
     completedWorkouts: 45,
   };
+
+  const avatars: Avatar[] = [
+    { id: 1, emoji: '👧', name: 'Девочка', unlocked: true, cost: 0 },
+    { id: 2, emoji: '👦', name: 'Мальчик', unlocked: true, cost: 0 },
+    { id: 3, emoji: '🦊', name: 'Лисёнок', unlocked: true, cost: 0 },
+    { id: 4, emoji: '🦁', name: 'Львёнок', unlocked: false, cost: 100 },
+    { id: 5, emoji: '🦄', name: 'Единорог', unlocked: false, cost: 150 },
+    { id: 6, emoji: '🐶', name: 'Щенок', unlocked: false, cost: 80 },
+    { id: 7, emoji: '🐱', name: 'Котёнок', unlocked: false, cost: 80 },
+    { id: 8, emoji: '🐼', name: 'Панда', unlocked: false, cost: 120 },
+    { id: 9, emoji: '🐯', name: 'Тигр', unlocked: false, cost: 200 },
+  ];
+
+  const leaderboard: LeaderboardUser[] = [
+    { id: 1, name: 'Маша', avatar: '👧', level: 12, points: 2840, rank: 4 },
+    { id: 2, name: 'Дима', avatar: '👦', level: 15, points: 3650, rank: 1 },
+    { id: 3, name: 'Катя', avatar: '🦊', level: 14, points: 3420, rank: 2 },
+    { id: 4, name: 'Алёша', avatar: '🦁', level: 13, points: 3150, rank: 3 },
+    { id: 5, name: 'София', avatar: '🦄', level: 11, points: 2560, rank: 5 },
+    { id: 6, name: 'Артём', avatar: '🐶', level: 10, points: 2340, rank: 6 },
+    { id: 7, name: 'Вера', avatar: '🐱', level: 9, points: 2100, rank: 7 },
+    { id: 8, name: 'Максим', avatar: '🐼', level: 8, points: 1890, rank: 8 },
+  ];
 
   const workouts: Workout[] = [
     {
@@ -206,30 +247,38 @@ const Index = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6">
-            <TabsTrigger value="dashboard" className="text-sm lg:text-base">
-              <Icon name="LayoutDashboard" className="mr-1 lg:mr-2" size={18} />
-              Главная
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-6">
+            <TabsTrigger value="dashboard" className="text-xs lg:text-base">
+              <Icon name="LayoutDashboard" className="mr-1" size={16} />
+              <span className="hidden lg:inline">Главная</span>
             </TabsTrigger>
-            <TabsTrigger value="workouts" className="text-sm lg:text-base">
-              <Icon name="Dumbbell" className="mr-1 lg:mr-2" size={18} />
-              Тренировки
+            <TabsTrigger value="workouts" className="text-xs lg:text-base">
+              <Icon name="Dumbbell" className="mr-1" size={16} />
+              <span className="hidden lg:inline">Тренировки</span>
             </TabsTrigger>
-            <TabsTrigger value="camera" className="text-sm lg:text-base">
-              <Icon name="Camera" className="mr-1 lg:mr-2" size={18} />
-              ИИ-тренер
+            <TabsTrigger value="camera" className="text-xs lg:text-base">
+              <Icon name="Camera" className="mr-1" size={16} />
+              <span className="hidden lg:inline">ИИ-тренер</span>
             </TabsTrigger>
-            <TabsTrigger value="lessons" className="text-sm lg:text-base">
-              <Icon name="GraduationCap" className="mr-1 lg:mr-2" size={18} />
-              Уроки
+            <TabsTrigger value="lessons" className="text-xs lg:text-base">
+              <Icon name="GraduationCap" className="mr-1" size={16} />
+              <span className="hidden lg:inline">Уроки</span>
             </TabsTrigger>
-            <TabsTrigger value="wallet" className="text-sm lg:text-base">
-              <Icon name="Wallet" className="mr-1 lg:mr-2" size={18} />
-              Кошелёк
+            <TabsTrigger value="wallet" className="text-xs lg:text-base">
+              <Icon name="Wallet" className="mr-1" size={16} />
+              <span className="hidden lg:inline">Кошелёк</span>
             </TabsTrigger>
-            <TabsTrigger value="parental" className="text-sm lg:text-base">
-              <Icon name="Shield" className="mr-1 lg:mr-2" size={18} />
-              Родители
+            <TabsTrigger value="leaderboard" className="text-xs lg:text-base">
+              <Icon name="Trophy" className="mr-1" size={16} />
+              <span className="hidden lg:inline">Лидеры</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="text-xs lg:text-base">
+              <Icon name="User" className="mr-1" size={16} />
+              <span className="hidden lg:inline">Профиль</span>
+            </TabsTrigger>
+            <TabsTrigger value="parental" className="text-xs lg:text-base">
+              <Icon name="Shield" className="mr-1" size={16} />
+              <span className="hidden lg:inline">Родители</span>
             </TabsTrigger>
           </TabsList>
 
@@ -695,6 +744,348 @@ const Index = () => {
                       <p className="font-semibold">Мастер финансов</p>
                       <Badge className="mt-2" variant="outline">Закрыто</Badge>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="leaderboard" className="animate-fade-in">
+            <div className="max-w-5xl mx-auto space-y-6">
+              <Card className="border-2 bg-gradient-to-br from-yellow-100 to-orange-100">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-2xl">
+                    <Icon name="Trophy" size={28} className="text-yellow-600" />
+                    Таблица лидеров
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-lg font-semibold mb-1">Твоя позиция в рейтинге</p>
+                      <p className="text-sm text-muted-foreground">Соревнуйся с друзьями и поднимайся выше!</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-5xl font-bold text-orange-600">#{leaderboard[0].rank}</div>
+                      <p className="text-sm text-muted-foreground mt-1">место</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon name="Users" size={20} className="text-purple-600" />
+                    Топ игроков
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {leaderboard.map((user, index) => {
+                      const isCurrentUser = user.name === userStats.name;
+                      const medalColors = ['text-yellow-500', 'text-gray-400', 'text-orange-600'];
+                      const medalIcon = index < 3 ? 'Medal' : null;
+
+                      return (
+                        <div
+                          key={user.id}
+                          className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
+                            isCurrentUser
+                              ? 'bg-gradient-to-r from-purple-100 to-blue-100 border-purple-300 hover-scale'
+                              : 'bg-muted/30 border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="relative">
+                              <div className="w-12 h-12 text-4xl flex items-center justify-center rounded-full bg-gradient-to-br from-purple-100 to-blue-100">
+                                {user.avatar}
+                              </div>
+                              {medalIcon && (
+                                <div className="absolute -top-1 -right-1">
+                                  <Icon name={medalIcon} size={20} className={medalColors[index]} />
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <p className="font-bold text-lg">{user.name}</p>
+                                {isCurrentUser && (
+                                  <Badge className="bg-purple-600">Ты</Badge>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground">Уровень {user.level}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-xl text-purple-600">{user.points}</div>
+                            <p className="text-xs text-muted-foreground">баллов</p>
+                          </div>
+                          <div className="text-center min-w-[60px]">
+                            <div className={`text-2xl font-bold ${isCurrentUser ? 'text-purple-600' : 'text-muted-foreground'}`}>
+                              #{user.rank}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="border-2 border-yellow-200 bg-yellow-50">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <Icon name="TrendingUp" size={18} className="text-yellow-600" />
+                      Поднялся на
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-yellow-600">+2</div>
+                    <p className="text-xs text-muted-foreground mt-1">позиции за неделю</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-2 border-orange-200 bg-orange-50">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <Icon name="Target" size={18} className="text-orange-600" />
+                      До 3 места
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-orange-600">310</div>
+                    <p className="text-xs text-muted-foreground mt-1">баллов осталось</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-2 border-purple-200 bg-purple-50">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <Icon name="Users" size={18} className="text-purple-600" />
+                      Друзей
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-purple-600">{leaderboard.length - 1}</div>
+                    <p className="text-xs text-muted-foreground mt-1">в рейтинге</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="border-2 bg-gradient-to-br from-purple-100 to-pink-100">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon name="Sparkles" size={20} className="text-purple-600" />
+                    Еженедельные награды
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-4 bg-white rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Icon name="Crown" size={32} className="text-yellow-500" />
+                        <div>
+                          <p className="font-semibold">1 место</p>
+                          <p className="text-sm text-muted-foreground">Золотая корона + 500 монет</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-white rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Icon name="Award" size={32} className="text-gray-400" />
+                        <div>
+                          <p className="font-semibold">2-3 место</p>
+                          <p className="text-sm text-muted-foreground">Серебряная медаль + 300 монет</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-white rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Icon name="Star" size={32} className="text-orange-600" />
+                        <div>
+                          <p className="font-semibold">4-10 место</p>
+                          <p className="text-sm text-muted-foreground">Бронзовая звезда + 100 монет</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="profile" className="animate-fade-in">
+            <div className="max-w-4xl mx-auto space-y-6">
+              <Card className="border-2 bg-gradient-to-br from-purple-100 to-blue-100">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col md:flex-row items-center gap-6">
+                    <div className="relative">
+                      <div className="w-32 h-32 text-8xl flex items-center justify-center rounded-full bg-gradient-to-br from-purple-200 to-blue-200 border-4 border-white shadow-lg">
+                        {avatars.find(a => a.id === selectedAvatar)?.emoji}
+                      </div>
+                      <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                        <span className="text-white font-bold text-lg">{userStats.level}</span>
+                      </div>
+                    </div>
+                    <div className="flex-1 text-center md:text-left">
+                      <h2 className="text-3xl font-bold mb-2">{userStats.name}</h2>
+                      <div className="flex flex-wrap gap-2 justify-center md:justify-start mb-4">
+                        <Badge className="bg-purple-600">
+                          <Icon name="Zap" size={14} className="mr-1" />
+                          Уровень {userStats.level}
+                        </Badge>
+                        <Badge className="bg-orange-500">
+                          <Icon name="Star" size={14} className="mr-1" />
+                          {userStats.points} баллов
+                        </Badge>
+                        <Badge className="bg-green-500">
+                          <Icon name="Flame" size={14} className="mr-1" />
+                          {userStats.streak} дней подряд
+                        </Badge>
+                      </div>
+                      <Progress value={levelProgress} className="h-3" />
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {userStats.nextLevelPoints - userStats.points} баллов до уровня {userStats.level + 1}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon name="Palette" size={20} className="text-purple-600" />
+                    Выбери аватар
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-3">
+                    {avatars.map((avatar) => (
+                      <button
+                        key={avatar.id}
+                        onClick={() => avatar.unlocked && setSelectedAvatar(avatar.id)}
+                        disabled={!avatar.unlocked}
+                        className={`relative aspect-square rounded-2xl border-2 flex flex-col items-center justify-center transition-all text-4xl ${
+                          avatar.unlocked
+                            ? selectedAvatar === avatar.id
+                              ? 'border-purple-500 bg-purple-100 scale-110 shadow-lg'
+                              : 'border-gray-200 bg-white hover:border-purple-300 hover:scale-105'
+                            : 'border-gray-200 bg-gray-100 opacity-50 cursor-not-allowed'
+                        }`}
+                      >
+                        {avatar.emoji}
+                        {!avatar.unlocked && (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 rounded-2xl">
+                            <Icon name="Lock" size={20} className="text-white mb-1" />
+                            <span className="text-xs text-white font-semibold">{avatar.cost}</span>
+                          </div>
+                        )}
+                        {selectedAvatar === avatar.id && avatar.unlocked && (
+                          <div className="absolute -top-2 -right-2">
+                            <Icon name="CheckCircle2" size={20} className="text-purple-600 bg-white rounded-full" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="border-2 border-purple-200">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                      <Icon name="Dumbbell" size={18} className="text-purple-600" />
+                      Всего тренировок
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-purple-600">{userStats.completedWorkouts}</div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-2 border-orange-200">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                      <Icon name="GraduationCap" size={18} className="text-orange-600" />
+                      Уроков пройдено
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-orange-600">
+                      {financeLessons.filter(l => l.completed).length}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-2 border-green-200">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                      <Icon name="Award" size={18} className="text-green-600" />
+                      Достижений
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-green-600">
+                      {achievements.filter(a => a.unlocked).length}/{achievements.length}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Icon name="Settings" size={20} className="text-purple-600" />
+                    Настройки профиля
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                    <div>
+                      <p className="font-medium">Имя пользователя</p>
+                      <p className="text-sm text-muted-foreground">Как тебя называть в приложении</p>
+                    </div>
+                    <Button variant="outline" size="sm">
+                      <Icon name="Edit" className="mr-2" size={16} />
+                      Изменить
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                    <div>
+                      <p className="font-medium">Уведомления о тренировках</p>
+                      <p className="text-sm text-muted-foreground">Напоминания каждое утро</p>
+                    </div>
+                    <Button variant="outline" size="sm" className="bg-green-100 text-green-600 border-green-600">
+                      <Icon name="Check" className="mr-2" size={16} />
+                      Включено
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                    <div>
+                      <p className="font-medium">Звуковые эффекты</p>
+                      <p className="text-sm text-muted-foreground">Музыка и звуки в приложении</p>
+                    </div>
+                    <Button variant="outline" size="sm" className="bg-green-100 text-green-600 border-green-600">
+                      <Icon name="Check" className="mr-2" size={16} />
+                      Включено
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                    <div>
+                      <p className="font-medium">Язык приложения</p>
+                      <p className="text-sm text-muted-foreground">Выбери удобный язык</p>
+                    </div>
+                    <select className="px-4 py-2 rounded-lg border-2">
+                      <option selected>Русский</option>
+                      <option>English</option>
+                    </select>
                   </div>
                 </CardContent>
               </Card>
